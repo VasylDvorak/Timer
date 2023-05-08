@@ -10,14 +10,15 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val textTimerFirst: MutableLiveData<String> = MutableLiveData(),
-    private val stopwatchListOrchestratorFirst: RepositoryStopwatchListOrchestrator
-    = RepositoryStopwatchListOrchestrator(),
-    private val textTimerSecond: MutableLiveData<String> = MutableLiveData(),
-    private val stopwatchListOrchestratorSecond: RepositoryStopwatchListOrchestrator
-    = RepositoryStopwatchListOrchestrator()
+    private val textTimerSecond: MutableLiveData<String> = MutableLiveData()
 ) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val stopwatchListOrchestratorFirst: RepositoryStopwatchListOrchestrator
+            = RepositoryStopwatchListOrchestrator()
+    private val stopwatchListOrchestratorSecond: RepositoryStopwatchListOrchestrator
+            = RepositoryStopwatchListOrchestrator()
+
     fun getTextForTimerFirst(): MutableLiveData<String> {
         coroutineScope.launch {
             stopwatchListOrchestratorFirst.ticker.collect {
