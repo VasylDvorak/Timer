@@ -9,34 +9,54 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val textTimer : MutableLiveData<String> = MutableLiveData(),
-    private val stopwatchListOrchestrator: RepositoryStopwatchListOrchestrator = RepositoryStopwatchListOrchestrator()
+    private val textTimerFirst: MutableLiveData<String> = MutableLiveData(),
+    private val stopwatchListOrchestratorFirst: RepositoryStopwatchListOrchestrator
+    = RepositoryStopwatchListOrchestrator(),
+    private val textTimerSecond: MutableLiveData<String> = MutableLiveData(),
+    private val stopwatchListOrchestratorSecond: RepositoryStopwatchListOrchestrator
+    = RepositoryStopwatchListOrchestrator()
 ) : ViewModel() {
 
-    fun getTextForTimer(): MutableLiveData<String> {
-        CoroutineScope(
-            Dispatchers.Main
-                    + SupervisorJob()
-        ).launch {
-            stopwatchListOrchestrator.ticker.collect {
-                textTimer.postValue( it)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    fun getTextForTimerFirst(): MutableLiveData<String> {
+        coroutineScope.launch {
+            stopwatchListOrchestratorFirst.ticker.collect {
+                textTimerFirst.postValue(it)
             }
         }
-
-        return textTimer
+        return textTimerFirst
     }
 
-
-   fun start(){
-       stopwatchListOrchestrator.start()
-   }
-
-    fun pause(){
-        stopwatchListOrchestrator.pause()
-    }
-    fun stop(){
-        stopwatchListOrchestrator.stop()
+    fun startFirst() {
+        stopwatchListOrchestratorFirst.start()
     }
 
+    fun pauseFirst() {
+        stopwatchListOrchestratorFirst.pause()
+    }
 
+    fun stopFirst() {
+        stopwatchListOrchestratorFirst.stop()
+    }
+
+    fun getTextForTimerSecond(): MutableLiveData<String> {
+        coroutineScope.launch {
+            stopwatchListOrchestratorSecond.ticker.collect {
+                textTimerSecond.postValue(it)
+            }
+        }
+        return textTimerSecond
+    }
+
+    fun startSecond() {
+        stopwatchListOrchestratorSecond.start()
+    }
+
+    fun pauseSecond() {
+        stopwatchListOrchestratorSecond.pause()
+    }
+
+    fun stopSecond() {
+        stopwatchListOrchestratorSecond.stop()
+    }
 }

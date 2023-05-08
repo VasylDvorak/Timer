@@ -7,11 +7,10 @@ import com.example.timer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private var binding: ActivityMainBinding? = null
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
-
-    private var binding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,30 +18,37 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        operateTimer()
+        operateFirstTimer()
+        operateSecondTimer()
     }
 
-    private fun operateTimer() {
+    private fun operateFirstTimer() {
         binding?.apply {
+            with(viewModel) {
+                getTextForTimerFirst().observe(this@MainActivity) { textTimeOne.text = it }
 
-        viewModel.getTextForTimer().observe(this@MainActivity) {
-            textTime.text =it
-        }
-
-        buttonStart.setOnClickListener {
-            viewModel.start()
-        }
-        buttonPause.setOnClickListener {
-            viewModel.pause()
-        }
-        buttonStop.setOnClickListener {
-            viewModel.stop()
+                buttonStartOne.setOnClickListener { startFirst() }
+                buttonPauseOne.setOnClickListener { pauseFirst() }
+                buttonStopOne.setOnClickListener { stopFirst() }
+            }
         }
     }
-}
+
+    private fun operateSecondTimer() {
+        binding?.apply {
+            with(viewModel) {
+                getTextForTimerSecond().observe(this@MainActivity) { textTimeTwo.text = it }
+
+                buttonStartTwo.setOnClickListener { startSecond() }
+                buttonPauseTwo.setOnClickListener { pauseSecond() }
+                buttonStopTwo.setOnClickListener { stopSecond() }
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        binding =null
+        binding = null
     }
 }
 
